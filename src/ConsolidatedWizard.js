@@ -69,7 +69,7 @@ class BaseTripForm extends Component {
                     </Form.Row>
                 </Container>
             }
-            {(this.props.type === "Conference" || this.props.type === "Tour") &&
+            {(this.props.type === "Conference" || this.props.type === "Tour" || this.props.type === "Other") &&
                 <Container>
                     <Form.Row>
                         <Form.Label column lg={5} className="required">
@@ -99,7 +99,7 @@ class BaseTripForm extends Component {
                     <Form.Check className="radio-input" type="radio" name="food" value="No" label="No" checked={this.props.food === "No"} required />
                     </Col></Form.Row><br/>
                 </div>
-                {(this.props.type === 'Overnight Field Trip' || this.props.type === 'Conference')&&
+                {(this.props.type === 'Overnight Field Trip' || this.props.type === 'Conference' || this.props.type === 'Other')&&
                 <div onChange={this.props.handleChange}>
                     <Form.Label className="required">Do you need to stay onsite? </Form.Label>
                     <Form.Row>
@@ -545,7 +545,7 @@ class ConsolidatedWizard extends React.Component {
                         </Col>
                     </Form.Row>
                     <Form.Row>
-                        <Form.Label>
+                        <Form.Label className="required">
                             Video Call Platform
                         <Col>
                             <Form.Control as="select" name="call_platform" value={this.state.form.call_platform} onChange={this.handleValidation} required>
@@ -598,6 +598,16 @@ class ConsolidatedWizard extends React.Component {
                     type="Tour"
                     people={this.state.form.people}
                     food={this.state.form.food}
+                    handleChange={this.handleInputChange}
+                    validate={this.handleValidation}
+                />
+            }
+            {this.state.form.purpose === "Other" &&
+                <BaseTripForm
+                    type="Other"
+                    people={this.state.form.people}
+                    food={this.state.form.food}
+                    overnight={this.state.form.overnight}
                     handleChange={this.handleInputChange}
                     validate={this.handleValidation}
                 />
@@ -735,7 +745,7 @@ class ConsolidatedWizard extends React.Component {
                 <Col><strong>Science Center Activities:</strong> {this.state.form.activities}</Col>
             </Row>
             <Row>
-                <Col><strong>Educational Activities:</strong> {this.state.form.schedule_details}</Col>
+                <Col><strong>Activities:</strong> {this.state.form.schedule_details}</Col>
             </Row>
             <Row>
                 <Col><strong>Other Information:</strong> {this.state.form.details}</Col>
