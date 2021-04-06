@@ -9,7 +9,7 @@ class App extends Component {
     return(
       <>
       <Navbar bg="light" expand="lg">
-        <Navbar.Brand><img src={logo} height="20" width="80"/></Navbar.Brand>
+        <Navbar.Brand><img src={logo} height="20" width="80" alt="gbors-logo"/></Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <NavDropdown title="External Links" id="basic-nav-dropdown">
