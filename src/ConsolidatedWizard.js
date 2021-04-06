@@ -505,7 +505,7 @@ class ConsolidatedWizard extends React.Component {
           parent={basic_info_page}
           onNext={(event) => {
             this.state.form.bread.push(this.state.current_page)
-            if ((this.state.form.people || this.state.form.students || this.state.form.faculty) !== null){
+            if (((this.state.form.people || this.state.form.students || this.state.form.faculty) !== null) && this.state.form.food !== null && this.state.form.overnight !== null){
                 this.setState({...this.state, current_page: "visit_details_page"});
             }
             else {
