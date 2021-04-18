@@ -284,6 +284,9 @@ class ConsolidatedWizard extends React.Component {
         call_link: null,
         call_link_q: null,
         call_platform: null,
+        group_type: null,
+        age_range: null,
+        program_type: [],
         bread: [],
       }
     };
@@ -505,12 +508,28 @@ class ConsolidatedWizard extends React.Component {
           parent={basic_info_page}
           onNext={(event) => {
             this.state.form.bread.push(this.state.current_page)
-            if (((this.state.form.people || this.state.form.students || this.state.form.faculty) !== null) && this.state.form.food !== null && this.state.form.overnight !== null){
-                this.setState({...this.state, current_page: "visit_details_page"});
+            if(this.state.form.purpose === "Virtual Visit"){
+                if (this.state.form.people !== null && this.state.form.group_type !== null && this.state.form.age_range !== null && this.state.form.program_type !== null){
+                    this.setState({...this.state, current_page: "visit_details_page"});
+                    this.setState(
+                        {form: 
+                            {...this.state.form, 
+                                food: "No",
+                                overnight: "No"
+                            }
+                        }
+                    );
+                    // this.setState({form: {...this.state.form, overnight: "No"}});
+                }
+            } else {
+                if (((this.state.form.people || this.state.form.students || this.state.form.faculty) !== null) && this.state.form.food !== null && this.state.form.overnight !== null){
+                    this.setState({...this.state, current_page: "visit_details_page"});
+                }
+                else {
+                    this.handleValidation(event)
+                }
             }
-            else {
-                this.handleValidation(event)
-            }
+
             event.preventDefault();
           }}
           onBack={(event) => {
@@ -542,6 +561,43 @@ class ConsolidatedWizard extends React.Component {
             }
             {this.state.form.purpose === "Virtual Visit" &&
                 <Container>
+
+                    <Form.Row>
+                        <Form.Label column lg={4} className="required">
+                            What kind of group are you representing?
+                        </Form.Label>
+
+                        <Col xs={6}>
+                            <Form.Control as="select" name="group_type" value={this.state.form.group_type ? this.state.form.group_type : ""} onChange={this.handleInputChange} required>
+                                <option />
+                                <option value="Sanctioned school group (K-12)">Sanctioned school group (K-12)</option>
+                                <option value="Sanctioned uni/college group">Sanctioned uni/college group</option>
+                                <option value="Church youth group">Church youth group</option>
+                                <option value="Homeschool association/club">Homeschool association or club</option>
+                                <option value="Scout/4-H/Civil Air Patrol/other after-school group/club">Scout, 4-H, Civil Air Patrol, or other after-school group or club</option>
+                                <option value="Camp from museum/organization">Camp from another museum or organization</option>
+                                <option value="Adult enrichment/professional development">Adult enrichment or professional development</option>
+                                <option value="Other">Other</option>
+                            </Form.Control>
+                        </Col>
+
+                    </Form.Row><br/>
+
+                    <Form.Row>
+                        <Form.Label className="required">
+                            What is the approximate age range of the students?
+                        </Form.Label>
+                        <Col xs={2}>
+                            <Form.Control
+                                name="age_range"
+                                type="text"
+                                value={this.state.form.age_range ? this.state.form.age_range : ""}
+                                onChange={this.handleInputChange}
+                                required
+                            />
+                        </Col>
+                    </Form.Row><br/>
+
                     <Form.Row>
                         <Form.Label className="required">
                             Approximately, how many people do you anticipate will attend?
@@ -554,23 +610,223 @@ class ConsolidatedWizard extends React.Component {
                                 required
                                 />
                         </Col>
-                    </Form.Row>
+                    </Form.Row><br/>
+
+                    <Form.Label className="required">What program(s) are you interested in? </Form.Label>
+                    <Form.Control.Feedback type="invalid">Please select an option!</Form.Control.Feedback>
+                    <Col xs={4}>
+                    <Form.Control as="select" multiple={true} name="program_type" value={this.state.form.program_type ? this.state.form.program_type : ""} onChange={this.handleMultipleInputChange} required> 
+                            <OverlayTrigger
+                                placement="right"
+                                transition={false}
+                                overlay={
+                                    <Tooltip id="history-tooltip">
+                                        30-45 minutes; Learn about the history of radio astronomy and the Green Bank Observatory. Usually offered in conjunction with the Science Discussion.
+                                    </Tooltip>
+                                }
+                            >
+                                <option value="Site History">Site History</option>
+                            </OverlayTrigger>
+
+                            <OverlayTrigger
+                                placement="right"
+                                transition={false}
+                                overlay={
+                                    <Tooltip id="discussion-tooltip">
+                                        30-45 minutes; Learn about the Green Bank Telescope's science projects, and analyze real data from our Twenty Meter Telescope. Usually offered in conjunction with the Site History presentation.
+                                    </Tooltip>
+                                }
+                            >
+                                <option value="Science Discussion">Science Discussion</option>
+                            </OverlayTrigger>
+
+                            <OverlayTrigger
+                                placement="right"
+                                transition={false}
+                                overlay={
+                                    <Tooltip id="site_tour-tooltip">
+                                        60-90 minutes; Learn about the history of radio astronomy and Green Bank telescopes and projects. Suitable for third grade and older.
+                                    </Tooltip>
+                                }
+                            >
+                                <option value="Site Tour">Site Tour</option>
+                            </OverlayTrigger>
+
+                            <OverlayTrigger
+                                placement="right"
+                                transition={false}
+                                overlay={
+                                    <Tooltip id="gbt_tour-tooltip">
+                                        60-90 minutes; Learn about the design of the Green Bank Telescope, how it moves, how it collects data, and what makes one of the world's premier radio telescopes. Suitable for advanced high school and older.
+                                    </Tooltip>
+                                }
+                            >
+                                <option value="GBT Tour">GBT Tour</option>
+                            </OverlayTrigger>
+
+                            <OverlayTrigger
+                                placement="right"
+                                transition={false}
+                                overlay={
+                                    <Tooltip id="discovery-tooltip">
+                                        90-120 minutes; Learn about Green Bank telescopes and projects, and then use real data from our Twenty Meter Telescope to discover the motion and structure of the Milky Way. Suitable for fifth grade and older.
+                                    </Tooltip>
+                                }
+                            >
+                                <option value="Milky Way Discovery">Milky Way Discovery</option>  
+                            </OverlayTrigger>
+
+                            <OverlayTrigger
+                                placement="right"
+                                transition={false}
+                                    overlay={
+                                    <Tooltip id="vRAD-tooltip">
+                                        At least two 60-90 minute sessions over two days. Use the Twenty Meter Telescope to take data and discover the motion and structure of the Milky Way. Suitable for fifth grade and older.
+                                    </Tooltip>
+                                }
+                            >
+                                <option value="Virtual Radio Astronomer for a Day">Virtual Radio Astronomer for a Day</option>
+                            </OverlayTrigger>
+
+                            <OverlayTrigger
+                                placement="right"
+                                transition={false}
+                                overlay={
+                                    <Tooltip id="visits-tooltip">
+                                        For special interest groups, such as ham radio, or if you would like to schedule a visit around a specific part of your students’ curriculum!
+                                    </Tooltip>
+                                }
+                            >
+                                <option value="Personalized Visits">Personalized Visits</option>
+                            </OverlayTrigger>
+
+                            <option value="Other">Other</option>
+                    </Form.Control>
+                    </Col>
+                    <br/>
+
+                    {/* <Container onChange={this.handleInputChange}>
+                        <Form.Row>
+                            <Col>
+                                <OverlayTrigger
+                                    placement="top"
+                                    transition={false}
+                                    overlay={
+                                        <Tooltip id="history-tooltip">
+                                            30-45 minutes; Learn about the history of radio astronomy and the Green Bank Observatory. Usually offered in conjunction with the Science Discussion.
+                                        </Tooltip>
+                                    }
+                                >
+                                    <Form.Check type="radio" name="program_type" value="Site History" label="Site History" checked={this.state.form.program_type === "Site History"} onChange={()=>{}} required />
+                                </OverlayTrigger>
+                            </Col>
+                            <Col>
+                                <OverlayTrigger
+                                    placement="top"
+                                    transition={false}
+                                    overlay={
+                                        <Tooltip id="discussion-tooltip">
+                                            30-45 minutes; Learn about the Green Bank Telescope's science projects, and analyze real data from our Twenty Meter Telescope. Usually offered in conjunction with the Site History presentation.
+                                        </Tooltip>
+                                    }
+                                >
+                                    <Form.Check type="radio" name="program_type" value="Science Discussion" label="Science Discussion" checked={this.state.form.program_type === "Science Discussion"} onChange={()=>{}} required />
+                                </OverlayTrigger>
+                            </Col>  
+                            
+                            <Col>
+                                <OverlayTrigger
+                                    placement="top"
+                                    transition={false}
+                                    overlay={
+                                        <Tooltip id="site_tour-tooltip">
+                                            60-90 minutes; Learn about the history of radio astronomy and Green Bank telescopes and projects. Suitable for third grade and older.
+                                        </Tooltip>
+                                    }
+                                >
+                                    <Form.Check type="radio" name="program_type" value="Site Tour" label="Site Tour" checked={this.state.form.program_type === "Site Tour"} onChange={()=>{}} required />
+                                </OverlayTrigger>
+                            </Col>
+                            <Col>
+                                <OverlayTrigger
+                                    placement="top"
+                                    transition={false}
+                                    overlay={
+                                        <Tooltip id="gbt_tour-tooltip">
+                                            60-90 minutes; Learn about the design of the Green Bank Telescope, how it moves, how it collects data, and what makes one of the world's premier radio telescopes. Suitable for advanced high school and older.
+                                        </Tooltip>
+                                    }
+                                >
+                                    <Form.Check type="radio" name="program_type" value="GBT Tour" label="GBT Tour" checked={this.state.form.program_type === "GBT Tour"} onChange={()=>{}} required />
+                                </OverlayTrigger>
+                            </Col>
+                        </Form.Row>
+                        <Form.Row>
+                            <Col>
+                                <OverlayTrigger
+                                    placement="top"
+                                    transition={false}
+                                    overlay={
+                                        <Tooltip id="discovery-tooltip">
+                                            90-120 minutes; Learn about Green Bank telescopes and projects, and then use real data from our Twenty Meter Telescope to discover the motion and structure of the Milky Way. Suitable for fifth grade and older.
+                                        </Tooltip>
+                                    }
+                                >
+                                    <Form.Check type="radio" name="program_type" value="Milky Way Discovery" label="Milky Way Discovery" checked={this.state.form.program_type === "Milky Way Discovery"} onChange={()=>{}} required />
+                                </OverlayTrigger>
+                            </Col>
+                            <Col>
+                                <OverlayTrigger
+                                    placement="top"
+                                    transition={false}
+                                    overlay={
+                                        <Tooltip id="tour-tooltip">
+                                            At least two 60-90 minute sessions over two days. Use the Twenty Meter Telescope to take data and discover the motion and structure of the Milky Way. Suitable for fifth grade and older.
+                                        </Tooltip>
+                                    }
+                                >
+                                    <Form.Check type="radio" name="program_type" value="Virtual Radio Astronomer for a Day" label="Virtual Radio Astronomer for a Day" checked={this.state.form.program_type === "Virtual Radio Astronomer for a Day"} onChange={()=>{}} required />
+                                </OverlayTrigger>
+                            </Col>
+                            <Col>
+                                <OverlayTrigger
+                                    placement="top"
+                                    transition={false}
+                                    overlay={
+                                        <Tooltip id="tour-tooltip">
+                                            For special interest groups, such as ham radio, or if you would like to schedule a visit around a specific part of your students’ curriculum!
+                                        </Tooltip>
+                                    }
+                                >
+                                    <Form.Check type="radio" name="program_type" value="Personalized Visits" label="Personalized Visits" checked={this.state.form.program_type === "Personalized Visits"} onChange={()=>{}} required />
+                                </OverlayTrigger>
+                            </Col>
+                            <Col>
+                                <Form.Check type="radio" name="program_type" value="Other" label="Other" checked={this.state.form.program_type === "Other"} onChange={()=>{}} required />
+                            </Col>
+                        </Form.Row>
+                    </Container><br/> */}
+                    <Form.Row>
+                    <Col>
                     <Form.Row>
                         <Form.Label className="required">
                             Video Call Platform
-                        <Col>
+                        </Form.Label>
+                        <Col xs={2}>
                             <Form.Control as="select" name="call_platform" value={this.state.form.call_platform ? this.state.form.call_platform : ""} onChange={this.handleValidation} required>
                                 <option />
                                 <option value="Zoom">Zoom</option>
                                 <option value="Teams">Teams</option>
-                                <option value="Duo">WebEx</option>
+                                <option value="WebEx">WebEx</option>
+                                <option value="Meet">Meet</option>
                                 <option value="Other">Other</option>
                             </Form.Control>
                         </Col>
-                        </Form.Label>
                     </Form.Row>
+                    </Col>
+                    <Col>
                     <Form.Row>
-                        <Form.Label>Select the box if you have a video call link you'd prefer to use (if not, the GBO team can provide you with one) </Form.Label>
+                        <Form.Label column lg={7}>Select the box if you have a video call link you'd prefer to use (if not, the GBO team can provide you with one) </Form.Label>
                         <input
                             className="checkbox-input"
                             name="call_link_q"
@@ -579,11 +835,14 @@ class ConsolidatedWizard extends React.Component {
                             onChange={this.handleInputChange}
                         />
                     </Form.Row>
+                    </Col>
+                    </Form.Row>
+
                     <Form.Row>
                         <Form.Label>
                             Video Call Link
                         </Form.Label>
-                        <Col xs={4}>
+                        <Col xs={5}>
                             <Form.Control
                                 name="call_link"
                                 type="text"
@@ -725,7 +984,16 @@ class ConsolidatedWizard extends React.Component {
             {this.state.form.purpose === "Virtual Visit" ?
             <>
                 <Row>
+                    <Col><strong>Group Type:</strong> {this.state.form.group_type}</Col>
+                </Row>
+                <Row>
                     <Col><strong>Attendance:</strong> {this.state.form.people}</Col>
+                </Row>
+                <Row>
+                    <Col><strong>Age Range:</strong> {this.state.form.age_range}</Col>
+                </Row>
+                <Row>
+                    <Col><strong>Program(s) Requested:</strong> {this.state.form.program_type ? this.state.form.program_type.map((program)=> program + ",") : "No programs selected"}</Col>
                 </Row>
                 <Row>
                     <Col><strong>Video Call Platform:</strong> {this.state.form.call_platform}</Col>
