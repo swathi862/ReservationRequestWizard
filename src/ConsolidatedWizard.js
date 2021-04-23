@@ -205,6 +205,7 @@ class GeneralForm extends Component {
             <>
             <h5>Other Details</h5>
             <h6>Educational Activities</h6>
+            <h7>Is there any other information that the education team should know about your group?</h7>
             <Form.Control as="textarea" rows={3}
                 name="education_details"
                 value={this.props.education_details ? this.props.education_details : ""}
@@ -519,9 +520,23 @@ class ConsolidatedWizard extends React.Component {
                             }
                         }
                     );
-                    // this.setState({form: {...this.state.form, overnight: "No"}});
                 }
-            } else {
+            } else if (this.state.form.purpose === "Day Field Trip" || this.state.form.purpose === "Tour"){
+                if (((this.state.form.people || this.state.form.students || this.state.form.faculty) !== null) && this.state.form.food !== null){
+                    this.setState({...this.state, current_page: "visit_details_page"});
+                    this.setState(
+                        {form: 
+                            {...this.state.form, 
+                                overnight: "No"
+                            }
+                        }
+                    );
+                }
+                else {
+                    this.handleValidation(event)
+                }
+            }
+            else {
                 if (((this.state.form.people || this.state.form.students || this.state.form.faculty) !== null) && this.state.form.food !== null && this.state.form.overnight !== null){
                     this.setState({...this.state, current_page: "visit_details_page"});
                 }
@@ -711,7 +726,7 @@ class ConsolidatedWizard extends React.Component {
                         <Form.Label className="required">
                             Video Call Platform
                         </Form.Label>
-                        <Col xs={2}>
+                        <Col xs={4}>
                             <Form.Control as="select" name="call_platform" value={this.state.form.call_platform ? this.state.form.call_platform : ""} onChange={this.handleValidation} required>
                                 <option />
                                 <option value="Zoom">Zoom</option>
